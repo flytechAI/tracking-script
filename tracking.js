@@ -54,17 +54,24 @@ async function fetchConfig(clientId) {
 }
 
 async function main() {
-    console.log("Function main called");
-    
     // Fetch client ID from script tag
     let scripts = document.getElementsByTagName('script');
     let currentScript = [...scripts].filter(script => script.src.includes('tracking.js'))[0];
-    let clientId = currentScript.getAttribute('data-client-id');
+    let clientId = currentScript ? currentScript.getAttribute('data-client-id') : null;
+
+    if (!clientId) {
+        console.error("Client ID not found in script tag. Exiting...");
+        return;
+    }
 
     // Fetch configuration based on client ID
     let config;
     try {
         config = await fetchConfig(clientId);
+        if (!config || !config.googleScriptURL || !config.utmParam) {
+            console.error("Incomplete configuration fetched. Exiting...");
+            return;
+        }
     } catch (error) {
         console.error("Error fetching configuration:", error);
         return;
