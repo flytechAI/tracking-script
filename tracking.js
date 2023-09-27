@@ -48,6 +48,7 @@ async function sendDataToSheet(ip, googleScriptURL) {
 
 async function fetchConfig(clientId) {
     console.log("Function fetchConfig called");
+    
     let configURL = `https://cdn.jsdelivr.net/gh/flytechAI/tracking-script@main/configs/6M6M6ZrR.json`;
     let response = await fetch(configURL);
     return await response.json();
@@ -55,6 +56,9 @@ async function fetchConfig(clientId) {
 
 async function main() {
     // Fetch client ID from script tag
+    console.log('All script tags:', document.getElementsByTagName('script'));
+    console.log('Filtered script tags:', [...document.getElementsByTagName('script')].filter(script => script.src.includes('tracking.js')));
+
     let scripts = document.getElementsByTagName('script');
     let currentScript = document.currentScript;
     let clientId = currentScript.getAttribute('data-client-id');
