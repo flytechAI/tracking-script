@@ -1,11 +1,3 @@
-// Load the jQuery library
-const script = document.createElement('script');
-script.src = "https://code.jquery.com/jquery-3.6.0.min.js";
-script.onload = function() {
-    main();
-};
-document.head.appendChild(script);
-
 // Function to check if a specific UTM parameter exists with the given value in the URL
 function checkUtmParam(utmValue) {
     const urlParams = new URLSearchParams(window.location.search);
@@ -77,4 +69,10 @@ async function main() {
     }
 }
 
-// Call the main function once the jQuery library is loaded
+// Load the jQuery library and call the main function once jQuery is loaded
+const script = document.createElement('script');
+script.src = "https://code.jquery.com/jquery-3.6.0.min.js";
+script.onload = function() {
+    main();
+};
+document.head.appendChild(script);
