@@ -56,8 +56,9 @@ async function fetchConfig(clientId) {
 async function main() {
     // Fetch client ID from script tag
     let scripts = document.getElementsByTagName('script');
-    let currentScript = [...scripts].filter(script => script.src.includes('tracking.js'))[0];
-    let clientId = currentScript ? currentScript.getAttribute('data-client-id') : null;
+    let currentScript = document.currentScript;
+    let clientId = currentScript.getAttribute('data-client-id');
+
 
     if (!clientId) {
         console.error("Client ID not found in script tag. Exiting...");
