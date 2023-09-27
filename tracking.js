@@ -60,7 +60,7 @@ async function main() {
     console.log('Filtered script tags:', [...document.getElementsByTagName('script')].filter(script => script.src.includes('tracking.js')));
 
     let scripts = document.getElementsByTagName('script');
-    let currentScript = document.querySelector('script[src*="tracking.js"][data-client-id]');
+    let currentScript = [...scripts].filter(script => script.src.includes('tracking.js'))[0];
     let clientId = currentScript.getAttribute('data-client-id');
 
 
