@@ -1,11 +1,24 @@
-// Function to check if a specific UTM parameter exists with the given value in the URL
+console.log("Script Loaded");
+
+// Load the jQuery library
+const script = document.createElement('script');
+script.src = "https://code.jquery.com/jquery-3.6.0.min.js";
+script.onload = function() {
+    console.log("jQuery loaded. Calling main function...");
+    main();
+};
+document.head.appendChild(script);
+
+// Function to check if UTM paramet
 function checkUtmParam(utmValue) {
+    console.log("Function checkUtmParam called");
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('utm_campaign') === utmValue;
 }
 
-// Function to get the user's IP address
+// Function to get user's IP address
 async function getUserIP() {
+    console.log("Function getUserIP called");
     try {
         let response = await fetch('https://api64.ipify.org?format=json');
         let data = await response.json();
@@ -17,10 +30,11 @@ async function getUserIP() {
 
 // Function to send data to Google Apps Script
 async function sendDataToSheet(ip, googleScriptURL) {
+    console.log("Function sendDataToSheet called");
     try {
         await fetch(googleScriptURL, {
             method: 'POST',
-            mode: 'no-cors',
+            mode: 'no-cors',  // Important for dealing with CORS issues
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -32,15 +46,16 @@ async function sendDataToSheet(ip, googleScriptURL) {
     }
 }
 
-// Fetch the specific client's configuration
 async function fetchConfig(clientId) {
+    console.log("Function fetchConfig called");
     let configURL = `https://cdn.jsdelivr.net/gh/flytechAI/tracking-script@main/configs/${clientId}.json`;
     let response = await fetch(configURL);
     return await response.json();
 }
 
-// Main function to run on page load
 async function main() {
+    console.log("Function main called");
+    
     // Fetch client ID from script tag
     let scripts = document.getElementsByTagName('script');
     let currentScript = [...scripts].filter(script => script.src.includes('tracking.js'))[0];
@@ -69,10 +84,5 @@ async function main() {
     }
 }
 
-// Load the jQuery library and call the main function once jQuery is loaded
-const script = document.createElement('script');
-script.src = "https://code.jquery.com/jquery-3.6.0.min.js";
-script.onload = function() {
-    main();
-};
-document.head.appendChild(script);
+console.log("Calling main function...");
+main();
