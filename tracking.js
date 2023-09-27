@@ -6,52 +6,42 @@ script.onload = function() {
 };
 document.head.appendChild(script);
 
-// Function to check if UTM parameter and value exist in the URL
-function checkUtmParam() {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('utm_campaign') === 'marketing';
+// Function to check if UTM paramet// The rest of your existing code...
+
+async function fetchConfig(clientId) {
+    let configURL = `https://cdn.jsdelivr.net/gh/flytechAI/tracking-script@main/configs/${clientId}.json`;
+    let response = await fetch(configURL);
+    return await response.json();
 }
 
-// Function to get user's IP address
-async function getUserIP() {
-    try {
-        let response = await fetch('https://api64.ipify.org?format=json');
-        let data = await response.json();
-        return data.ip;
-    } catch (error) {
-        console.error('Error fetching IP:', error);
-    }
-}
-
-// Function to send data to Google Apps Script
-async function sendDataToSheet(ip) {
-    try {
-        await fetch('https://script.google.com/macros/s/AKfycby5efgyX7DiI-hSACsyyQKjXAw7sP2jjahh4JQ-iYmwDaJG_vyyrA8iEPUx0EhP_L9N/exec', {
-            method: 'POST',
-            mode: 'no-cors',  // Important for dealing with CORS issues
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ ip: ip })
-        });
-        console.log("Data sent successfully");
-    } catch (error) {
-        console.error("Error sending data:", error);
-    }
-}
-
-// Main function to run after jQuery loads
 async function main() {
-    // Check if the URL contains the required UTM parameter and value
-    if (!checkUtmParam()) {
+    // Fetch client ID from script tag
+    let scripts = document.getElementsByTagName('script');
+    let currentScript = [...scripts].filter(script => script.src.includes('tracking.js'))[0];
+    let clientId = currentScript.getAttribute('data-client-id');
+
+    // Fetch configuration based on client ID
+    let config;
+    try {
+        config = await fetchConfig(clientId);
+    } catch (error) {
+        console.error("Error fetching configuration:", error);
+        return;
+    }
+
+    // Check if the URL contains the required UTM parameter and value from config
+    if (!checkUtmParam(config.utmParam)) {
         console.log("UTM condition not met. Exiting...");
         return;
     }
 
     let userIP = await getUserIP();
     if (userIP) {
-        sendDataToSheet(userIP);
+        sendDataToSheet(userIP, config.googleScriptURL);
     } else {
         console.error("Could not retrieve user IP.");
     }
 }
+
+// Call the main function on page load
+main();
